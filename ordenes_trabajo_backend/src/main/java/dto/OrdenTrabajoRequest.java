@@ -7,9 +7,11 @@ import java.time.LocalDateTime;
 
 @Data
 
-public class ordentrabajorequest {
+public class OrdenTrabajoRequest {
     @NotBlank(message = "El cliente es requerido")
     private String cliente;
+
+    private String telfono;
 
     @NotBlank(message = "El equipo es requerido")
     private String equipo;

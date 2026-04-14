@@ -1,15 +1,13 @@
 package service;
 
-import dto.registrorequest;
+import dto.RegistroRequest;
 import dto.UsuarioUpdateRequest;
-import model.usuario;
-import repository.usuariorepository;
+import model.Usuario;
+import repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,21 +15,21 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 
-public class usuarioservice {
-    private final usuariorepository usuarioRepository;
+public class UsuarioService {
+    private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
-    private final registrologservice registroLogService;
+    private final RegistroLogService registroLogService;
 
-    public usuario registrarUsuario(registrorequest request, String usuarioActual) {
+    public Usuario registrarUsuario(RegistroRequest request, String usuarioActual) {
         if (usuarioRepository.existsByNombreUsuario(request.getNombreusuario())) {
-            throw new RuntimeException("El nombre de usuario ya existe");
+            throw new RuntimeException("El nombre de Usuario ya existe");
         }
 
         if (usuarioRepository.existsByCorreo(request.getCorreo())) {
             throw new RuntimeException("El correo ya está registrado");
         }
 
-        usuario usuario = new usuario();
+        Usuario usuario = new Usuario();
         usuario.setNombreusuario(request.getNombreusuario());
         usuario.setContrasena(passwordEncoder.encode(request.getContrasena()));
         usuario.setCorreo(request.getCorreo());
@@ -41,7 +39,7 @@ public class usuarioservice {
         usuario.setFechacreacion(LocalDateTime.now());
         usuario.setFechaactualizacion(LocalDateTime.now());
 
-        usuario usuarioGuardado = usuarioRepository.save(usuario);
+        Usuario usuarioGuardado = usuarioRepository.save(usuario);
 
         // Registrar log
         registroLogService.registrarLog(
@@ -56,24 +54,24 @@ public class usuarioservice {
         return usuarioGuardado;
     }
 
-    public List<usuario> obtenerTodosUsuarios() {
+    public List<Usuario> obtenerTodosUsuarios() {
         return usuarioRepository.findAll();
     }
 
-    public List<usuario> obtenerUsuariosActivos() {
+    public List<Usuario> obtenerUsuariosActivos() {
         return usuarioRepository.findByActivo(true);
     }
 
-    public Optional<usuario> obtenerUsuarioPorId(String id) {
+    public Optional<Usuario> obtenerUsuarioPorId(String id) {
         return usuarioRepository.findById(id);
     }
 
     public Usuario actualizarUsuario(String id, usuarioupdaterequest request, String usuarioActual) {
-        usuario usuario = usuarioRepository.findById(id)
+        Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         // Guardar valores antiguos para el log
-        usuario usuarioAntiguo = new usuario();
+        Usuario usuarioAntiguo = new Usuario();
         usuarioAntiguo.setNombrecompleto(usuario.getNombrecompleto());
         usuarioAntiguo.setRol(usuario.getRol());
         usuarioAntiguo.setActivo(usuario.getActivo());
@@ -91,7 +89,7 @@ public class usuarioservice {
         }
 
         usuario.setFechaActualizacion(LocalDateTime.now());
-        usuario usuarioActualizado = usuarioRepository.save(usuario);
+        Usuario usuarioActualizado = usuarioRepository.save(usuario);
 
         // Registrar log
         registroLogService.registrarLog(
@@ -107,7 +105,7 @@ public class usuarioservice {
     }
 
     public void desactivarUsuario(String id, String usuarioActual) {
-        usuario usuario = usuarioRepository.findById(id)
+        Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         usuario.setActivo(false);

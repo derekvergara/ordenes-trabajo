@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Document(collection = "usuarios")
-public class usuario {
+public class Usuario {
     @Id
     private String id;
 

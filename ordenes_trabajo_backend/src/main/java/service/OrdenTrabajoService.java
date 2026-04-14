@@ -1,9 +1,9 @@
 package service;
 
-import dto.filtroordenrequest;
-import dto.ordentrabajorequest;
-import model.ordentrabajo;
-import repository.ordentrabajorepository;
+import dto.FiltroOrdenRequest;
+import dto.OrdenTrabajoRequest;
+import model.OrdenTrabajo;
+import repository.OrdenTrabajoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,13 +15,13 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 
-public class ordentrabajoservice {
+public class OrdenTrabajoService {
 
-    private final ordentrabajorepository ordenTrabajoRepository;
-    private final registrologservice registroLogService;
+    private final OrdenTrabajoRepository ordenTrabajoRepository;
+    private final RegistroLogService registroLogService;
 
-    public ordentrabajo crearOrden(ordentrabajorequest request, String usuarioActual) {
-        ordentrabajo orden = new ordentrabajo();
+    public OrdenTrabajo crearOrden(OrdenTrabajoRequest request, String usuarioActual) {
+        OrdenTrabajo orden = new OrdenTrabajo();
 
         // Generar número de orden único
         String numeroOrden = "OT-" + LocalDateTime.now().getYear() +
@@ -44,7 +44,7 @@ public class ordentrabajoservice {
         orden.setFechaactualizacion(LocalDateTime.now());
         orden.setCreadopor(usuarioActual);
 
-        ordentrabajo ordenGuardada = ordenTrabajoRepository.save(orden);
+        OrdenTrabajo ordenGuardada = ordenTrabajoRepository.save(orden);
 
         // Registrar log
         registroLogService.registrarLog(
@@ -59,24 +59,24 @@ public class ordentrabajoservice {
         return ordenGuardada;
     }
 
-    public List<ordentrabajo> obtenerTodasOrdenes() {
+    public List<OrdenTrabajo> obtenerTodasOrdenes() {
         return ordenTrabajoRepository.findAll();
     }
 
-    public List<ordentrabajo> obtenerOrdenesActivas() {
+    public List<OrdenTrabajo> obtenerOrdenesActivas() {
         return ordenTrabajoRepository.findByActivo(true);
     }
 
-    public Optional<ordentrabajo> obtenerOrdenPorId(String id) {
+    public Optional<OrdenTrabajo> obtenerOrdenPorId(String id) {
         return ordenTrabajoRepository.findById(id);
     }
 
-    public ordentrabajo actualizarOrden(String id, ordentrabajorequest request, String usuarioActual) {
-        ordentrabajo orden = ordenTrabajoRepository.findById(id)
+    public OrdenTrabajo actualizarOrden(String id, OrdenTrabajoRequest request, String usuarioActual) {
+        OrdenTrabajo orden = ordenTrabajoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Orden de trabajo no encontrada"));
 
         // Guardar valores antiguos para el log
-        ordentrabajo ordenAntigua = new ordentrabajo();
+        OrdenTrabajo ordenAntigua = new OrdenTrabajo();
         ordenAntigua.setCliente(orden.getCliente());
         ordenAntigua.setEquipo(orden.getEquipo());
         ordenAntigua.setDanio(orden.getDanio());
@@ -96,7 +96,7 @@ public class ordentrabajoservice {
         orden.setTecnicoasignado(request.getTecnicoasignado());
         orden.setFechaactualizacion(LocalDateTime.now());
 
-        ordentrabajo ordenActualizada = ordenTrabajoRepository.save(orden);
+        OrdenTrabajo ordenActualizada = ordenTrabajoRepository.save(orden);
 
         // Registrar log
         registroLogService.registrarLog(
@@ -112,7 +112,7 @@ public class ordentrabajoservice {
     }
 
     public void desactivarOrden(String id, String usuarioActual) {
-        ordentrabajo orden = ordenTrabajoRepository.findById(id)
+        OrdenTrabajo orden = ordenTrabajoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Orden de trabajo no encontrada"));
 
         orden.setActivo(false);
@@ -130,7 +130,7 @@ public class ordentrabajoservice {
         );
     }
 
-    public List<ordentrabajo> buscarPorFiltros(filtroordenrequest filtro) {
+    public List<OrdenTrabajo> buscarPorFiltros(FiltroOrdenRequest filtro) {
         return ordenTrabajoRepository.buscarPorFiltros(
                 filtro.getActivo(),
                 filtro.getCliente() != null ? filtro.getCliente() : "",

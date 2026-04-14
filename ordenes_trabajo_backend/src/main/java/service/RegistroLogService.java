@@ -1,11 +1,11 @@
 package service;
 
-import model.registrolog;
-import repository.registrologrepository;
+import model.RegistroLog;
+import repository.RegistroLogRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,14 +13,14 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 
-public class registrologservice {
+public class RegistroLogService {
 
-    private final registrologrepository registroLogRepository;
+    private final RegistroLogRepository registroLogRepository;
     private final HttpServletRequest request;
 
     public void registrarLog(String usuarioId, String nombreUsuario, String ordenId,
                              String accion, String entidad, Map<String, Object> cambios) {
-        registrolog log = new registrolog();
+        RegistroLog log = new RegistroLog();
         log.setUsuarioid(usuarioId);
         log.setNombreusuario(nombreUsuario);
         log.setOrdenid(ordenId);
@@ -38,12 +38,12 @@ public class registrologservice {
         Map<String, Object> cambios = new HashMap<>();
 
         if (objetoAntiguo != null && objetoNuevo != null) {
-            // Aquí podrías implementar una comparación más sofisticada
+            // aqui podrías implementar una comparacion mas sofisticada
             cambios.put("objeto_antiguo", objetoAntiguo);
             cambios.put("objeto_nuevo", objetoNuevo);
         }
 
-        // Para simplicidad, usamos el mismo nombre de usuario
+        // para simplicidad, usamos el mismo nombre de Usuario
         registrarLog(usuarioActual, usuarioActual, entidadId, accion, entidad, cambios);
     }
 
@@ -55,15 +55,15 @@ public class registrologservice {
         return xfHeader.split(",")[0];
     }
 
-    public List<registrolog> obtenerLogsPorUsuario(String usuarioId) {
+    public List<RegistroLog> obtenerLogsPorUsuario(String usuarioId) {
         return registroLogRepository.findByUsuarioId(usuarioId);
     }
 
-    public List<registrolog> obtenerLogsPorOrden(String ordenId) {
+    public List<RegistroLog> obtenerLogsPorOrden(String ordenId) {
         return registroLogRepository.findByOrdenId(ordenId);
     }
 
-    public List<registrolog> obtenerTodosLogs() {
+    public List<RegistroLog> obtenerTodosLogs() {
         return registroLogRepository.findAll();
     }
 }

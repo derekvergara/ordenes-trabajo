@@ -6,10 +6,10 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class registrorequest {
+public class RegistroRequest {
 
-    @NotBlank(message = "El nombre de usuario es requerido")
-    @Size(min = 3, max = 20, message = "El nombre de usuario debe tener entre 3 a 20 caracteres")
+    @NotBlank(message = "El nombre de Usuario es requerido")
+    @Size(min = 3, max = 20, message = "El nombre de Usuario debe tener entre 3 a 20 caracteres")
     private String nombreusuario;
 
     @NotBlank(message = "La contraseña es requerida")

@@ -9,7 +9,7 @@ import java.util.Map;
 
 @Data
 @Document(collection = "registros_log")
-public class registrolog {
+public class RegistroLog {
     @Id
     private String id;
 
@@ -26,7 +26,7 @@ public class registrolog {
     private String accion; //crear,actualizar, desactivar,login,cerrar sesion
 
     @Field("entidad")
-    private String entidad;// usuario , orden de trabajo
+    private String entidad;// Usuario , orden de trabajo
 
     @Field("cambios")
     private Map<String, Object> cambios ;  // campos modificados con valores antiguos o nuevos
